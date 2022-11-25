@@ -10,7 +10,7 @@ fun main() {
         ReaderFactory.createBufferedReader(file).use { reader ->
             var line = reader.readLine()
             while (line != null) {
-                if (line.isNotEmpty() && line.isNotBlank()) {
+                if (line.isNotBlank()) {
                     val valid = line.trim().validator()
                     if (valid.answer) countValid++
                 }
@@ -37,16 +37,17 @@ fun String.validator(): ValidationModel {
     //take from line valid request
     val str = rgx.find(this)?.value
     if (str != null) {
-        val list = str.split(Regex(pattern = "(\\s|:\\s|-)"))
-        val rStart = list[1].toIntOrNull()
-        val rEnd = list[2].toIntOrNull()
+        val (sym, rangeStart, rangeEnd, pwd) = str.split(Regex(pattern = "(\\s|:\\s|-)"))
+        val rStart = rangeStart.toIntOrNull()
+        val rEnd = rangeEnd.toIntOrNull()
         model = ValidationModel().apply {
             if (rStart != null && rEnd != null) {
-                symbol = list[0]
+                symbol = sym
+                //reverse range if necessary
                 range = if (rStart < rEnd) rStart..rEnd else rEnd..rStart
-                password = list[3]
+                password = pwd
                 val count = password!!.count { it == symbol!!.first() }
-                answer = count in range!! && count < range!!.last
+                answer = count in range!!
                 description = if (!answer) "Invalid password" else "Password is valid."
             } else {
                 description = "Invalid request: ${this@validator}"

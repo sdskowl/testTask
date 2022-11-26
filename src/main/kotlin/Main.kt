@@ -32,7 +32,7 @@ fun main() {
  * 1) Symbol is not out of range
  * */
 fun String.validator(): ValidationModel {
-    var model = ValidationModel()
+    val model = ValidationModel()
     val rgx = Regex(pattern = "^.\\s\\d*-\\d*:\\s\\S*")
     //take from line valid request
     val str = rgx.find(this)?.value
@@ -40,7 +40,7 @@ fun String.validator(): ValidationModel {
         val (sym, rangeStart, rangeEnd, pwd) = str.split(Regex(pattern = "(\\s|:\\s|-)"))
         val rStart = rangeStart.toIntOrNull()
         val rEnd = rangeEnd.toIntOrNull()
-        model = ValidationModel().apply {
+        model.apply {
             if (rStart != null && rEnd != null) {
                 symbol = sym
                 //reverse range if necessary
